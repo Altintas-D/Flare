@@ -14,13 +14,9 @@ library(viridis)
 setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Lab files/Comoglio/Manuscripts/Flare effect/TCGA ptpn phospho mtor phospho")
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
+```{r}
 ptp50 <- read.table("ptpn50.txt", dec=".", header=T, sep="\t")
 ptp352 <- read.table("ptpn352.txt", dec=".", header=T, sep="\t")
 ptp378 <- read.table("ptpn378.txt", dec=".", header=T, sep="\t")
