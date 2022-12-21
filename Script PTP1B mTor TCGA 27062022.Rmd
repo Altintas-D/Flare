@@ -11,15 +11,15 @@ library(reshape2)
 library(viridis)
 
 
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Lab files/Comoglio/Manuscripts/Flare effect/TCGA ptpn phospho mtor phospho")
+
 ```
 
 
 
 ```{r}
-ptp50 <- read.table("ptpn50.txt", dec=".", header=T, sep="\t")
-ptp352 <- read.table("ptpn352.txt", dec=".", header=T, sep="\t")
-ptp378 <- read.table("ptpn378.txt", dec=".", header=T, sep="\t")
+ptp50 <- read.table("https://raw.githubusercontent.com/Altintas-D/Flare/ptpn50.txt", dec=".", header=T, sep="\t")
+ptp352 <- read.table("https://raw.githubusercontent.com/Altintas-D/Flare/ptpn352.txt", dec=".", header=T, sep="\t")
+ptp378 <- read.table("https://raw.githubusercontent.com/Altintas-D/Flare/ptpn378.txt", dec=".", header=T, sep="\t")
 
 colnames(ptp50) <- c("sample_id", "mTOR_P_S1261", "PTP1B_P_S50", "mutations", "CNV")
 colnames(ptp352) <- c("sample_id", "mTOR_P_S1261", "PTP1B_P_S352", "mutations", "CNV")
@@ -108,12 +108,3 @@ ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
                                  title.position = "top", title.hjust = 0.5))
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
