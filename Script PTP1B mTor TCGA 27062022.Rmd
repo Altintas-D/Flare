@@ -1,0 +1,123 @@
+---
+title: "Untitled"
+author: "Dogus Altintas"
+date: "6/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(reshape2)
+library(viridis)
+
+
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Lab files/Comoglio/Manuscripts/Flare effect/TCGA ptpn phospho mtor phospho")
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+ptp50 <- read.table("ptpn50.txt", dec=".", header=T, sep="\t")
+ptp352 <- read.table("ptpn352.txt", dec=".", header=T, sep="\t")
+ptp378 <- read.table("ptpn378.txt", dec=".", header=T, sep="\t")
+
+colnames(ptp50) <- c("sample_id", "mTOR_P_S1261", "PTP1B_P_S50", "mutations", "CNV")
+colnames(ptp352) <- c("sample_id", "mTOR_P_S1261", "PTP1B_P_S352", "mutations", "CNV")
+colnames(ptp378) <- c("sample_id", "mTOR_P_S1261", "PTP1B_P_S378", "mutations", "CNV")
+
+mtor_ptp <- merge(ptp50, ptp352, by="sample_id")
+mtor_ptp <- merge(mtor_ptp, ptp378, by="sample_id")
+rownames(mtor_ptp) <- mtor_ptp$sample_id
+mtor_ptp2 <- mtor_ptp[,c(10,3,7,11)]
+
+### Cor Matrix
+cormat <- round(cor(mtor_ptp2),2)
+melted_cormat <- melt(cormat)
+
+ggplot(data = melted_cormat, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile()
+
+# Obtenir le triangle inférieur
+  get_lower_tri<-function(cormat){
+    cormat[upper.tri(cormat)] <- NA
+    return(cormat)
+  }
+  # Obtenir le triangle supérieur
+  get_upper_tri <- function(cormat){
+    cormat[lower.tri(cormat)]<- NA
+    return(cormat)
+  }
+  
+  
+upper_tri <- get_upper_tri(cormat)
+lower_tri <- get_lower_tri(cormat)
+
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+  
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
+    geom_tile(color = "white")+
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                         midpoint = 0.75, limit = c(0.5,1), space = "Lab",
+                         name="Pearson\nCorrelation") +
+    theme_minimal()+ 
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                     size = 12, hjust = 1))+
+  theme(axis.text.y = element_text(angle = 0, vjust = 1, 
+                                     size = 12, hjust = 1)) +
+    coord_fixed() +
+geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.grid.major = element_blank(),
+  panel.border = element_blank(),
+  panel.background = element_blank(),
+  axis.ticks = element_blank(),
+  legend.justification = c(1, 0),
+  legend.position = c(0.5, 0.8),
+  legend.direction = "horizontal")+
+  guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+                title.position = "top", title.hjust = 0.5))
+
+
+
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
+    geom_tile(color = "white")+
+    scale_fill_viridis(limit = c(0.5,1), space = "Lab",
+                         name="Pearson\nCorrelation", option="plasma", direction=-1) +
+    theme_minimal()+ 
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                     size = 14, hjust = 1, face="bold"))+
+    theme(axis.text.y = element_text(angle = 0, vjust = 1, 
+                                     size = 14, hjust = 1, face="bold")) +
+    coord_fixed() +
+    geom_text(aes(Var2, Var1, label = value), color = "white", size = 6, fontface="bold") +
+    theme(
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.justification = c(1, 0),
+        legend.position = c(0.5, 0.8),
+        legend.direction = "horizontal",
+        legend.title = element_text(size=10, face="bold"),
+        legend.text=element_text(size=10, face="bold"))+
+    guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+                                 title.position = "top", title.hjust = 0.5))
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
